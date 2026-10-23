@@ -18,8 +18,8 @@ for platform in iphoneos iphonesimulator; do
 		slice=ios-arm64
 		plist=basic_Info.plist
 	else
-		arch=x86_64
-		triple=x86_64-apple-ios14.0-simulator
+		arch="arm64;x86_64"
+		triple=
 		slice=ios-arm64_x86_64-simulator
 		plist=basic_Info_Simulator.plist
 	fi
@@ -29,7 +29,7 @@ for platform in iphoneos iphonesimulator; do
 		-DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT="$(xcrun --sdk "$platform" --show-sdk-path)" \
 		-DCMAKE_OSX_ARCHITECTURES="$arch" -DCMAKE_OSX_DEPLOYMENT_TARGET=14.0 \
 		-DCMAKE_BUILD_TYPE=Release -DCMAKE_MACOSX_BUNDLE=OFF \
-		-DCMAKE_CXX_FLAGS="-target $triple -I$PWD/.build/deps" \
+		-DCMAKE_CXX_FLAGS="${triple:+-target $triple} -I$PWD/.build/deps" \
 		-DCMAKE_EXE_LINKER_FLAGS="-dynamiclib -F$frameworks -framework ios_system"
 	cmake --build ".build/$platform" --target task_executable calc_executable lex_executable --parallel 3
 
